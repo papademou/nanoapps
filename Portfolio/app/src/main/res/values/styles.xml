@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+    <!-- Style for all buttons on app launch screen -->
+    <style name="AppButton">
+        <item name="android:layout_width">@dimen/btn_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginBottom">@dimen/margin_app_btn_bottom</item>
+    </style>
+    <!-- Style specific to orange buttons -->
+    <style name="AppOrangeButton" parent="AppButton">
+        <item name="android:background">@color/background_btn_orange</item>
+    </style>
+
+</resources>

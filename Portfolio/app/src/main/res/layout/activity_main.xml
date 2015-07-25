@@ -57,8 +57,8 @@
             android:tag="Capstone"
             android:text="CAPSTONE: MY OWN APP"
             android:id="@+id/btn_app_capstone"
-            android:background="@color/background_capstone"
-            android:textColor="#fff" />
+            android:background="@color/btn_capstone_background"
+            android:textColor="@color/btn_capstone_text" />
 
     </LinearLayout>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="btn_color_orange">#F08C35</color>
-    <color name="background_btn_orange">#F08C35</color>
-    <color name="background_capstone">#CD0E3E</color>
+    <color name="btn_app_background">#F08C35</color>
+    <color name="btn_capstone_background">#CD0E3E</color>
+    <color name="btn_capstone_text">#FFF</color>
 </resources>

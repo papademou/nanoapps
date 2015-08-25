@@ -1,0 +1,1 @@
+Before you can run this app, you need to request an API key from the movie db at https://www.themoviedb.org/?_dc=1440484918 and replace your API_KEY in the file app/src/main/java/com/papademou/popularmovies/Constants.java

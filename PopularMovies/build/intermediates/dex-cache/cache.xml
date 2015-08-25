@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\p01ks\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="C:\root\github\PopularMovies\app\build\intermediates\pre-dexed\debug\picasso-2.5.2-8d2da803f97640a841d8df0715f1502f53da2de4.jar" />
+    </item>
+    <item
+        jar="C:\root\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\libs\internal_impl-23.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
+        <dex dex="C:\root\github\PopularMovies\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.0-e8934713f99333a939fad8030421dd3cfdf2cc74.jar" />
+    </item>
+    <item
+        jar="C:\root\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
+        <dex dex="C:\root\github\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-106a71d354a581630bcfe250f960f9af100fe9ce.jar" />
+    </item>
+    <item
+        jar="C:\root\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
+        <dex dex="C:\root\github\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-13ab962d4b8a14535108a58df9853cb1bcc70540.jar" />
+    </item>
+    <item
+        jar="C:\Users\p01ks\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.0\support-annotations-23.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="990e7f98a7bad86a40b1f0bcfeb039023afd0839">
+        <dex dex="C:\root\github\PopularMovies\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.0-054a7266e813eaf8fcda3e0790004cfe41e67b1b.jar" />
+    </item>
+
+</items>

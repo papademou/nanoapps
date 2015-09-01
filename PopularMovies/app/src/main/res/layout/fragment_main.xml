@@ -12,5 +12,6 @@
         android:layout_gravity="left|top"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
+        android:columnWidth="130dp"
         android:gravity="center" />
 </FrameLayout>

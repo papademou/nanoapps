@@ -121,7 +121,7 @@ public class SettingsActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            bindPreferenceSummaryToValue(findPreference("sort_by"));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_by_key)));
         }
     }
 }

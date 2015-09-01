@@ -16,9 +16,6 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivityFragment extends Fragment {
 
-    public DetailActivityFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -33,6 +33,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.papademou.popularmovies.Constants.KEY_OVERVIEW;
+import static com.papademou.popularmovies.Constants.KEY_POSTER_PATH;
+import static com.papademou.popularmovies.Constants.KEY_RELEASE_DATE;
+import static com.papademou.popularmovies.Constants.KEY_TITLE;
+import static com.papademou.popularmovies.Constants.KEY_VOTE_AVG;
 import static com.papademou.popularmovies.Constants.TMDB_API_KEY;
 import static com.papademou.popularmovies.Constants.TMDB_DISCOVER_BASE_URL;
 
@@ -42,16 +47,15 @@ import static com.papademou.popularmovies.Constants.TMDB_DISCOVER_BASE_URL;
 public class MoviePostersFragment extends Fragment {
 
     private static final String KEY_MOVIES_PARCEL = "movies";
-    private ImageAdapter imageAdapter;
-    private TMDBMovie[] movies;
-    //use field below to store the sort by setting and track related changes
-    private String mSortByOption;
+    private ImageAdapter mAdapter;
+    private TMDBMovie[] mMovies;
+    private String mSortByOption; //to store the sort by setting and track related changes
 
-    public void updateMovieGrid() {
+    private void updateMovieGrid() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortByOption = prefs.getString(getString(R.string.pref_sort_by_key), getString(R.string.pref_sort_by_default_value));
 
-        if (null != mSortByOption && sortByOption == mSortByOption) {
+        if (null != mSortByOption && sortByOption.equals(mSortByOption)) {
             return; //we only want to fetch a new movie list if the sort preference has changed (after the activity has started)
         }
 
@@ -68,7 +72,7 @@ public class MoviePostersFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArray(KEY_MOVIES_PARCEL, movies);
+        outState.putParcelableArray(KEY_MOVIES_PARCEL, mMovies);
         super.onSaveInstanceState(outState);
     }
 
@@ -76,38 +80,31 @@ public class MoviePostersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final String TITLE_EXTRA = "TITLE";
-        final String RELEASE_DATE_EXTRA = "RELEASE_DATE";
-        final String POSTER_PATH_EXTRA = "POSTER_PATH";
-        final String OVERVIEW_EXTRA = "OVERVIEW";
-        final String VOTE_AVG_EXTRA = "VOTE_AVG";
-
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        imageAdapter = new ImageAdapter(getActivity());
+        mAdapter = new ImageAdapter(getActivity());
 
         if (savedInstanceState != null) {
-            movies = (TMDBMovie []) savedInstanceState.getParcelableArray(KEY_MOVIES_PARCEL);
+            mMovies = (TMDBMovie []) savedInstanceState.getParcelableArray(KEY_MOVIES_PARCEL);
         } else {
-            movies = new TMDBMovie[] {};
-            //updateMovieGrid();
+            mMovies = new TMDBMovie[] {};
         }
 
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-        gridView.setAdapter(imageAdapter);
+        gridView.setAdapter(mAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TMDBMovie movie = (TMDBMovie) imageAdapter.getItem(position);
+                TMDBMovie movie = (TMDBMovie) mAdapter.getItem(position);
 
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
                 Date releaseDate = movie.getReleaseDate();
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(TITLE_EXTRA, movie.getTitle())
-                        .putExtra(RELEASE_DATE_EXTRA, releaseDate == null ? "" : df.format(releaseDate))
-                        .putExtra(POSTER_PATH_EXTRA, movie.constructImagePath())
-                        .putExtra(OVERVIEW_EXTRA, movie.getOverview())
-                        .putExtra(VOTE_AVG_EXTRA, movie.getVoteAverage());
+                        .putExtra(KEY_TITLE, movie.getTitle())
+                        .putExtra(KEY_RELEASE_DATE, releaseDate == null ? "" : df.format(releaseDate))
+                        .putExtra(KEY_POSTER_PATH, movie.constructImagePath())
+                        .putExtra(KEY_OVERVIEW, movie.getOverview())
+                        .putExtra(KEY_VOTE_AVG, movie.getVoteAverage());
                 startActivity(intent);
             }
         });
@@ -123,11 +120,11 @@ public class MoviePostersFragment extends Fragment {
         }
 
         public int getCount() {
-            return movies.length;
+            return mMovies.length;
         }
 
         public Object getItem(int position) {
-            return movies[position];
+            return mMovies[position];
         }
 
         public long getItemId(int position) {
@@ -147,7 +144,7 @@ public class MoviePostersFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
-            Picasso.with(getActivity()).load(movies[position].constructImagePath()).into(imageView);
+            Picasso.with(getActivity()).load(mMovies[position].constructImagePath()).into(imageView);
 
             return imageView;
         }
@@ -179,7 +176,7 @@ public class MoviePostersFragment extends Fragment {
                 movie.setId(result.getInt(ID_KEY));
                 movie.setTitle(result.getString(TITLE_KEY));
                 String dateStr = result.getString(RELEASE_DATE_KEY);
-                if (dateStr == null || dateStr == "null") {
+                if (dateStr == null || dateStr.equals("null")) {
                     movie.setReleaseDate(null);
                 } else {
                     movie.setReleaseDate(format.parse(dateStr));
@@ -208,14 +205,13 @@ public class MoviePostersFragment extends Fragment {
                         .appendQueryParameter(getString(R.string.pref_sort_by_key), params[0])
                         .build();
 
-                String b = builtUri.toString();
                 URL url = new URL(builtUri.toString());
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
                 InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 if (inputStream == null) {
                     // Nothing to do.
                     return null;
@@ -224,14 +220,15 @@ public class MoviePostersFragment extends Fragment {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
+                    sb.append(line);
+                    sb.append("\n");
                 }
 
-                if (buffer.length() == 0) {
+                if (sb.length() == 0) {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
-                responseJsonStr = buffer.toString();
+                responseJsonStr = sb.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 return null;
@@ -260,8 +257,8 @@ public class MoviePostersFragment extends Fragment {
 
         @Override
         protected void onPostExecute(TMDBMovie[] results) {
-            movies = results;
-            imageAdapter.notifyDataSetChanged();
+            mMovies = results;
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

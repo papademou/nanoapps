@@ -29,6 +29,9 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <provider
+            android:authorities="com.papademou.popularmovies"
+            android:name=".data.MovieProvider" />
     </application>
 
 </manifest>

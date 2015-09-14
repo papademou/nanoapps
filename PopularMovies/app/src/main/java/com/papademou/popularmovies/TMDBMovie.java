@@ -20,13 +20,13 @@ public class TMDBMovie implements Parcelable {
     private static final String KEY_VOTE_AVG = "vote_avg";
     private static final String KEY_OVERVIEW = "overview";
 
-
     private int id;
     private String title;
     private Date releaseDate;
     private String posterPath;
     private double voteAverage;
     private String overview;
+    private boolean isFavorite;
 
     public int getId() {
         return id;
@@ -38,6 +38,14 @@ public class TMDBMovie implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public boolean getIsFavorite() {
+        return isFavorite;
     }
 
     public void setTitle(String title) {

@@ -2,4 +2,6 @@
     <string name="app_name">PopularMovies</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="btn_favorite_add">Mark as Favorite</string>
+    <string name="btn_favorite_remove">Remove from favorites</string>
 </resources>

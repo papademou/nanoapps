@@ -3,6 +3,7 @@ package com.papademou.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.papademou.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -33,6 +35,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.papademou.popularmovies.Constants.KEY_IS_FAVORITE;
+import static com.papademou.popularmovies.Constants.KEY_MOVIE_ID;
 import static com.papademou.popularmovies.Constants.KEY_OVERVIEW;
 import static com.papademou.popularmovies.Constants.KEY_POSTER_PATH;
 import static com.papademou.popularmovies.Constants.KEY_RELEASE_DATE;
@@ -42,7 +46,7 @@ import static com.papademou.popularmovies.Constants.TMDB_API_KEY;
 import static com.papademou.popularmovies.Constants.TMDB_DISCOVER_BASE_URL;
 
 /**
- * A placeholder fragment containing a simple view.
+ * TODO: implement loader, move AsyncTask to external class and save everything in database
  */
 public class MoviePostersFragment extends Fragment {
 
@@ -100,10 +104,12 @@ public class MoviePostersFragment extends Fragment {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
                 Date releaseDate = movie.getReleaseDate();
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(KEY_MOVIE_ID, movie.getId())
                         .putExtra(KEY_TITLE, movie.getTitle())
                         .putExtra(KEY_RELEASE_DATE, releaseDate == null ? "" : df.format(releaseDate))
                         .putExtra(KEY_POSTER_PATH, movie.constructImagePath())
                         .putExtra(KEY_OVERVIEW, movie.getOverview())
+                        .putExtra(KEY_IS_FAVORITE, movie.getIsFavorite())
                         .putExtra(KEY_VOTE_AVG, movie.getVoteAverage());
                 startActivity(intent);
             }
@@ -198,6 +204,46 @@ public class MoviePostersFragment extends Fragment {
             String responseJsonStr = null;
 
             try{
+                //If the user has selected favorites, read from database
+                if (params[0].equals(getString(R.string.pref_sort_by_favorites_value))) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+                    TMDBMovie[] mMovies = null;
+                    String[] mProjection = {
+                            MovieContract.MovieEntry.COLUMN_ID,
+                            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+                            MovieContract.MovieEntry.COLUMN_TITLE,
+                            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+                            MovieContract.MovieEntry.COLUMN_VOTE_AVG,
+                            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+                            //MovieContract.MovieEntry.COLUMN_IS_FAVORITE
+                    };
+
+                    Cursor mCursor = getContext().getContentResolver().query(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            mProjection,
+                            null,
+                            null,
+                            null);
+                    if (null != mCursor && mCursor.getCount() >= 1) {
+                        mMovies = new TMDBMovie[mCursor.getCount()];
+                        while(mCursor.moveToNext()) {
+                            TMDBMovie mMovie = new TMDBMovie();
+                            mMovie.setId(mCursor.getInt(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_ID)));
+                            mMovie.setTitle(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_TITLE)));
+                            mMovie.setReleaseDate(format.parse(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_RELEASE_DATE))));
+                            mMovie.setPosterPath(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                            mMovie.setVoteAverage(mCursor.getDouble(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_VOTE_AVG)));
+                            mMovie.setOverview(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
+                            //mMovie.setIsFavorite(mCursor.getInt(mCursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_IS_FAVORITE)) != 0);
+                            mMovies[mCursor.getPosition()] = mMovie;
+                        }
+                    }
+                    mCursor.close();
+
+                    return mMovies;
+
+                }
+
                 final String PARAM_API_KEY = "api_key";
 
                 Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL).buildUpon()
@@ -232,7 +278,10 @@ public class MoviePostersFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 return null;
-            } finally {
+            } catch (ParseException e) {
+                Log.e(LOG_TAG, "ParseException ", e);
+            }
+            finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }

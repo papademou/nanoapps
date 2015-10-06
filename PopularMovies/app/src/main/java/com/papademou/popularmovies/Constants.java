@@ -4,7 +4,7 @@ package com.papademou.popularmovies;
  * Key constants used in the application
  */
 class Constants {
-    public static final String TMDB_API_KEY = "Enter your key here";
+    public static final String TMDB_API_KEY = "Enter your API key here";
     public static final String TMDB_DISCOVER_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
     public static final String TMDB_TRAILER_URL = "http://api.themoviedb.org/3/movie/{id}/videos";
     public static final String TMDB_REVIEWS_URL = "http://api.themoviedb.org/3/movie/{id}/reviews";

@@ -1,7 +1,6 @@
 package com.papademou.popularmovies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,13 +35,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.papademou.popularmovies.Constants.KEY_IS_FAVORITE;
-import static com.papademou.popularmovies.Constants.KEY_MOVIE_ID;
-import static com.papademou.popularmovies.Constants.KEY_OVERVIEW;
-import static com.papademou.popularmovies.Constants.KEY_POSTER_PATH;
-import static com.papademou.popularmovies.Constants.KEY_RELEASE_DATE;
-import static com.papademou.popularmovies.Constants.KEY_TITLE;
-import static com.papademou.popularmovies.Constants.KEY_VOTE_AVG;
 import static com.papademou.popularmovies.Constants.TMDB_API_KEY;
 import static com.papademou.popularmovies.Constants.TMDB_DISCOVER_BASE_URL;
 
@@ -54,6 +47,11 @@ public class MoviePostersFragment extends Fragment {
     private ImageAdapter mAdapter;
     private TMDBMovie[] mMovies;
     private String mSortByOption; //to store the sort by setting and track related changes
+
+    public interface OnItemSelectedListener {
+        public void onItemSelected(int movieId, String title, String releaseDate, String posterPath,
+                                   String overview, boolean isFavorite, double voteAvg);
+    }
 
     private void updateMovieGrid() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -99,19 +97,24 @@ public class MoviePostersFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OnItemSelectedListener listener;
                 TMDBMovie movie = (TMDBMovie) mAdapter.getItem(position);
+                if (movie != null) {
+                    FragmentActivity activity = getActivity();
+                    try{
+                        listener = (OnItemSelectedListener) activity;
+                    } catch(ClassCastException e) {
+                        throw new ClassCastException(activity.toString()
+                                + " needs to implement OnItemSelectedListener");
+                    }
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-                Date releaseDate = movie.getReleaseDate();
-                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(KEY_MOVIE_ID, movie.getId())
-                        .putExtra(KEY_TITLE, movie.getTitle())
-                        .putExtra(KEY_RELEASE_DATE, releaseDate == null ? "" : df.format(releaseDate))
-                        .putExtra(KEY_POSTER_PATH, movie.constructImagePath())
-                        .putExtra(KEY_OVERVIEW, movie.getOverview())
-                        .putExtra(KEY_IS_FAVORITE, movie.getIsFavorite())
-                        .putExtra(KEY_VOTE_AVG, movie.getVoteAverage());
-                startActivity(intent);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+                    Date releaseDate = movie.getReleaseDate();
+                    listener.onItemSelected(movie.getId(), movie.getTitle(),
+                            releaseDate == null ? "" : df.format(releaseDate),
+                            movie.constructImagePath(), movie.getOverview(),
+                            movie.getIsFavorite(), movie.getVoteAverage());
+                }
             }
         });
 

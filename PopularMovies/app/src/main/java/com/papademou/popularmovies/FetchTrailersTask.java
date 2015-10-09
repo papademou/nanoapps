@@ -2,7 +2,6 @@ package com.papademou.popularmovies;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
@@ -10,22 +9,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.papademou.popularmovies.activity.DetailActivity;
+import com.papademou.popularmovies.activity.MainActivity;
+import com.papademou.popularmovies.adapter.MovieDetailAdapter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
 
-import static com.papademou.popularmovies.Constants.TMDB_API_KEY;
-import static com.papademou.popularmovies.Constants.TMDB_TRAILER_URL;
+import retrofit.Call;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
+import static com.papademou.popularmovies.util.Constants.TMDB_API_KEY;
+import static com.papademou.popularmovies.util.Constants.TMDB_BASE_URL;
+
+/**
+ * AsyncTask to fetch info about movie trailers from The Movie Database (TMDb), given a movie id
+ */
 public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
 
     private final String LOG_TAG = FetchTrailersTask.class.getSimpleName();
@@ -37,88 +38,29 @@ public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
         mActivity = activity;
     }
 
-    private MovieTrailers getTrailersFromJson(String responseJsonStr) throws JSONException, ParseException {
-        final String KEY_VIDEO_KEY = "key";
-        final String KEY_VIDEO_NAME = "name";
-
-        JSONObject responseJson = new JSONObject(responseJsonStr);
-        JSONArray results = responseJson.getJSONArray("results");
-
-        ArrayList<MovieTrailer> trailers = new ArrayList<MovieTrailer>();
-
-        for (int i=0; i<results.length(); i++) {
-            JSONObject result = results.getJSONObject(i);
-            MovieTrailer trailer = new MovieTrailer();
-            trailer.setmKey(result.getString(KEY_VIDEO_KEY));
-            trailer.setmName(result.getString(KEY_VIDEO_NAME));
-            trailers.add(trailer);
-        }
-        MovieTrailers movieTrailers = new MovieTrailers();
-        movieTrailers.setmTrailers(trailers);
-        return movieTrailers;
-    }
-
     @Override
     protected MovieTrailers doInBackground(String... params) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String responseJsonStr = null;
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TMDB_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-        try{
-            final String PARAM_API_KEY = "api_key";
+        TMDbService service = retrofit.create(TMDbService.class);
 
-            Uri builtUri = Uri.parse(TMDB_TRAILER_URL.replace("{id}", params[0])).buildUpon()
-                    .appendQueryParameter(PARAM_API_KEY, TMDB_API_KEY)
-                    .build();
-
-            URL url = new URL(builtUri.toString());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuilder sb = new StringBuilder();
-            if (inputStream == null) {
-                // Nothing to do.
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-
-            if (sb.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                return null;
-            }
-            responseJsonStr = sb.toString();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-
+        //params[0] contains the movie id
+        Call<TMDbMovieResult<MovieTrailer>> call = service.getTrailers(params[0], TMDB_API_KEY);
+        TMDbMovieResult result = null;
         try {
-            return getTrailersFromJson(responseJsonStr);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
+            result = call.execute().body();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error fetching movie trailers with Retrofit", e);
+            return null;
         }
 
-        return null;
+        return new MovieTrailers(result.getResults());
     }
 
     @Override
@@ -128,7 +70,7 @@ public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
             mDetailAdapter.addTrailers(results);
 
             /*
-            Display and build share menu item functionality if trailers are found
+            Display and build intent for share menu item if trailers are found
              */
             if (mActivity != null) {
                 Menu menu = mActivity instanceof MainActivity ? ((MainActivity) mActivity).getMenu()
@@ -137,13 +79,14 @@ public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
                     MenuItem shareMenuItem = menu.findItem(R.id.action_share_trailer);
                     if (shareMenuItem != null) {
                         boolean visibility = false;
-                        if (results != null && results.getmTrailers().size() > 0) {
+                        if (results != null && results.getMTrailers().size() > 0) {
                                 ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareMenuItem);
                                 if (shareActionProvider != null) {
+                                    //Build intent to send the url of the first trailer
                                     Intent intent = new Intent();
                                     intent.setAction(Intent.ACTION_SEND);
                                     intent.setType("text/plain");
-                                    intent.putExtra(Intent.EXTRA_TEXT, results.getmTrailers().get(0).getUri());
+                                    intent.putExtra(Intent.EXTRA_TEXT, results.getMTrailers().get(0).getUri());
                                     shareActionProvider.setShareIntent(intent);
                                 }
                             visibility = true;

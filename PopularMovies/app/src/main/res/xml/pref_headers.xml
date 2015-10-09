@@ -3,7 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.papademou.popularmovies.SettingsActivity$GeneralPreferenceFragment"
-        android:title="@string/pref_header_general" />
+        android:fragment="com.papademou.popularmovies.activity.SettingsActivity$SettingsPreferenceFragment"
+        android:title="@string/pref_header_settings" />
 
 </preference-headers>

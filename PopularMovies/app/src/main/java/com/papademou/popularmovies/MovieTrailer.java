@@ -1,26 +1,20 @@
 package com.papademou.popularmovies;
 
-public class MovieTrailer{
-    private static final String YOUTUBE_BASE_URI = "http://www.youtube.com/watch?v=";
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import com.papademou.popularmovies.util.Constants;
+
+import lombok.Getter;
+import lombok.Setter;
+
+public class MovieTrailer extends MovieDetail {
+
+    @Getter @Setter @Expose @SerializedName("key")
     private String mKey;
+    @Getter @Setter @Expose @SerializedName("name")
     private String mName;
 
-    public void setmName(String mName) {
-        this.mName = mName;
-    }
+    public String getUri() { return Constants.YOUTUBE_VIDEO_BASE_URI + mKey; }
 
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
-    }
-
-    public String getmName() {
-        return mName;
-    }
-
-    public String getmKey(){
-        return mKey;
-    }
-
-    public String getUri() { return YOUTUBE_BASE_URI + mKey; }
-
+    public MovieTrailer() { this.setType(Type.TRAILER); }
 }

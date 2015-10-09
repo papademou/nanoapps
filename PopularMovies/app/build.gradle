@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 repositories {
@@ -25,9 +30,12 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:support-v4:23.0.0'
-    compile 'com.android.support:recyclerview-v7:23.0.0'
     provided "org.projectlombok:lombok:1.12.6"
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
 }

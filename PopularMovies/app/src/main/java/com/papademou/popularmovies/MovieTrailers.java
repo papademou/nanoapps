@@ -2,21 +2,21 @@ package com.papademou.popularmovies;
 
 import java.util.List;
 
-/**
- * Created by p01ks on 10/4/2015.
- */
+import lombok.Getter;
+import lombok.Setter;
+
 public class MovieTrailers extends MovieDetail{
-    public List<MovieTrailer> getmTrailers() {
-        return mTrailers;
-    }
 
-    public void setmTrailers(List<MovieTrailer> mTrailers) {
-        this.mTrailers = mTrailers;
-    }
-
+    @Getter @Setter
     private List<MovieTrailer> mTrailers;
+
     public MovieTrailers() {
         this.setType(Type.TRAILERS);
+    }
+
+    public MovieTrailers(List<MovieTrailer> trailers) {
+        this();
+        mTrailers = trailers;
     }
 
 }

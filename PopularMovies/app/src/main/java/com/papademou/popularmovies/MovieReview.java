@@ -1,18 +1,19 @@
 package com.papademou.popularmovies;
 
-/**
- * Created by p01ks on 10/4/2015.
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import lombok.Getter;
+import lombok.Setter;
+
 public class MovieReview extends MovieDetail {
+
+    @Getter @Setter @Expose @SerializedName("author")
+    private String mAuthor;
+    @Getter @Setter @Expose @SerializedName("content")
     private String mContent;
-
-    public void setmContent(String mContent) {
-        this.mContent = mContent;
-    }
-
-    public String getmContent() {
-        return mContent;
-    }
+    @Getter @Setter @Expose @SerializedName("url")
+    private String mUrl;
 
     public MovieReview() { this. setType(Type.REVIEW); }
 }

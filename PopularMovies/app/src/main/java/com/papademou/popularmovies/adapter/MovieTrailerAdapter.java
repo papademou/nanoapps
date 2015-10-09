@@ -1,4 +1,4 @@
-package com.papademou.popularmovies;
+package com.papademou.popularmovies.adapter;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -10,31 +10,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.papademou.popularmovies.MovieTrailer;
+import com.papademou.popularmovies.MovieTrailers;
+import com.papademou.popularmovies.R;
+import com.papademou.popularmovies.util.Utility;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.papademou.popularmovies.Constants.YOUTUBE_THUMBNAIL_URI;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
+/**
+ * RecyclerView Adapter to display movie trailers horizontally
+ */
 public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.ViewHolder>{
     private List<MovieTrailer> mTrailers;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private View mView;
-        private ImageView mImageView;
+        @Bind(R.id.trailer_thumb) ImageView mImageView;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mImageView = (ImageView) view.findViewById(R.id.trailer_thumb);
+            ButterKnife.bind(this, view);
         }
-
-
     }
 
     public MovieTrailerAdapter(Context context, MovieTrailers trailers) {
-        mTrailers = trailers.getmTrailers();
+        mTrailers = trailers.getMTrailers();
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -45,15 +50,15 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final MovieTrailer trailer = mTrailers.get(position);
-        String thumbnailSrc = YOUTUBE_THUMBNAIL_URI.replace("{VIDEO_ID}",trailer.getmKey());
-        Picasso.with(holder.mImageView.getContext()).load(thumbnailSrc).fit().centerCrop().into(holder.mImageView);
+        String thumbnailUrl = Utility.getYoutubeVideoThumnailUrl(trailer.getMKey());
+        Picasso.with(holder.mImageView.getContext()).load(thumbnailUrl).fit().centerCrop().into(holder.mImageView);
 
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* First, try opening explicitly from youtube app */
+                /* First, try opening explicitly from Youtube app. If fails, send implicit intent */
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailer.getmKey()));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailer.getMKey()));
                     v.getContext().startActivity(intent);
                 } catch (ActivityNotFoundException ex) {
                     Intent intent = new Intent(Intent.ACTION_VIEW,

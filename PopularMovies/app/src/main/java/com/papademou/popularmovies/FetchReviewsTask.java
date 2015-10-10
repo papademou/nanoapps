@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.papademou.popularmovies.adapter.MovieDetailAdapter;
+import com.papademou.popularmovies.adapter.DetailsAdapter;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,9 +22,9 @@ import static com.papademou.popularmovies.util.Constants.TMDB_BASE_URL;
  */
 public class FetchReviewsTask extends AsyncTask<String, Void, List<MovieReview>> {
     private final String LOG_TAG = FetchReviewsTask.class.getSimpleName();
-    private MovieDetailAdapter mAdapter;
+    private DetailsAdapter mAdapter;
 
-    public FetchReviewsTask(MovieDetailAdapter adapter) {
+    public FetchReviewsTask(DetailsAdapter adapter) {
         super();
         mAdapter = adapter;
     }

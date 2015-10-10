@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.papademou.popularmovies.fragment.MovieDetailsFragment;
+import com.papademou.popularmovies.fragment.DetailsFragment;
 import com.papademou.popularmovies.R;
 
 /**
@@ -23,10 +23,10 @@ public class DetailActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             //load a DetailFragment instance in the detail screen, populated with movie info
-            //passed as intent from MainActivity
+            //passed as intent from MasterActivity
             Bundle arguments = new Bundle();
             arguments.putAll(getIntent().getExtras());
-            MovieDetailsFragment detailFragment = new MovieDetailsFragment();
+            DetailsFragment detailFragment = new DetailsFragment();
             detailFragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()

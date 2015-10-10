@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:baselineAligned="false"
-    android:layout_height="match_parent" tools:context="com.papademou.popularmovies.activity.MainActivity">
+    android:layout_height="match_parent" tools:context="com.papademou.popularmovies.activity.MasterActivity">
 
     <!-- Master/Detail 2-pane layout -->
     <fragment
         android:id="@+id/fragment_posters"
-        android:name="com.papademou.popularmovies.fragment.MoviePostersFragment"
+        android:name="com.papademou.popularmovies.fragment.PostersFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.papademou.popularmovies.activity.DetailActivity;
-import com.papademou.popularmovies.activity.MainActivity;
-import com.papademou.popularmovies.adapter.MovieDetailAdapter;
+import com.papademou.popularmovies.activity.MasterActivity;
+import com.papademou.popularmovies.adapter.DetailsAdapter;
 
 import java.io.IOException;
 
@@ -30,9 +30,9 @@ import static com.papademou.popularmovies.util.Constants.TMDB_BASE_URL;
 public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
 
     private final String LOG_TAG = FetchTrailersTask.class.getSimpleName();
-    private MovieDetailAdapter mDetailAdapter;
+    private DetailsAdapter mDetailAdapter;
     private Activity mActivity;
-    public FetchTrailersTask(Activity activity, MovieDetailAdapter adapter) {
+    public FetchTrailersTask(Activity activity, DetailsAdapter adapter) {
         super();
         mDetailAdapter = adapter;
         mActivity = activity;
@@ -73,7 +73,7 @@ public class FetchTrailersTask extends AsyncTask<String, Void, MovieTrailers> {
             Display and build intent for share menu item if trailers are found
              */
             if (mActivity != null) {
-                Menu menu = mActivity instanceof MainActivity ? ((MainActivity) mActivity).getMenu()
+                Menu menu = mActivity instanceof MasterActivity ? ((MasterActivity) mActivity).getMenu()
                         : ((DetailActivity) mActivity).getMenu();
                 if (menu != null) {
                     MenuItem shareMenuItem = menu.findItem(R.id.action_share_trailer);

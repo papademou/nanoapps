@@ -5,5 +5,7 @@
     <ListView
         android:id="@+id/listview_movie_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"
+        android:dividerHeight="15dp"
+        android:divider="@android:color/transparent" />
 </LinearLayout>

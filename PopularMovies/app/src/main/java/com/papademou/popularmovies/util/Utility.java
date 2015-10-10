@@ -3,6 +3,7 @@ package com.papademou.popularmovies.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 
 import java.util.Date;
 
@@ -38,4 +39,17 @@ public class Utility {
 
         return isConnected;
     }
+
+    /**
+     * Helper method to return a user preference value
+     * @param context
+     * @param prefKey   the preference key
+     * @param defaultValue
+     * @return
+     */
+    public static String getPreferenceValue(Context context, String prefKey, String defaultValue) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(prefKey, defaultValue);
+    }
+
 }

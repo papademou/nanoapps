@@ -2,14 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.papademou.popularmovies.fragment.MovieDetailsFragment"
-    android:padding="0dp">
+    tools:context="com.papademou.popularmovies.fragment.DetailsFragment"
+    android:padding="0dp" >
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:id="@+id/movie_title"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -17,20 +16,19 @@
         android:background="@color/background_title"
         android:textColor="@color/title_text"
         android:paddingLeft="@dimen/screen_left_padding"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
-        android:textSize="30sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:textIsSelectable="false" />
 
     <ImageView
-        android:layout_width="150sp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/poster"
         android:layout_below="@+id/movie_title"
         android:adjustViewBounds="true"
         android:layout_alignLeft="@id/movie_title"
         android:paddingLeft="@dimen/screen_left_padding"
-        android:layout_marginTop="5sp" />
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +37,7 @@
         android:layout_toRightOf="@id/poster"
         android:layout_below="@id/movie_title"
         android:layout_alignTop="@id/poster"
-        android:layout_marginLeft="15sp" />
+        android:layout_marginLeft="15dp" />
 
     <TextView
         android:id="@+id/vote_avg"
@@ -61,8 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/poster"
+        android:textSize="13sp"
         android:paddingLeft="@dimen/screen_left_padding"
-        android:layout_marginTop="15sp"/>
-
+        android:paddingRight="15dp"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

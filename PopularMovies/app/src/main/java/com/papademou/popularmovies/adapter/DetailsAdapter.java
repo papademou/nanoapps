@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  *   _____________________________________________________________________________________________
  *  | VIEW TYPE   |  MOVIEDETAIL TYPE     | VIEW LAYOUT              |   LOOK AND FEEL            |
  *  |---------------------------------------------------------------------------------------------|
- *  |VIEW_SUMMARY | Class Instance: Movie | movie_detail_summary.xml |        Title               |
+ *  |VIEW_SUMMARY | Class Instance: Movie | detail_summary.xml       |        Title               |
  *  |             | Enum Type: SUMMARY    |                          | I   Release Date           |
  *  |             |                       |                          | M  Vote Avg                |
  *  |             |                       |                          | A   Favorite Button        |
@@ -49,34 +49,32 @@ import butterknife.ButterKnife;
  *  |             |                       |                          | E                          |
  *  |             |                       |                          | .....Plot Synopsis.......  |
  *  |---------------------------------------------------------------------------------------------|
- *  |VIEW_TRAILERS| Class Instance:       | movie_detail_trailers.xml| (Horizontal RecyclerView)  |
+ *  |VIEW_TRAILERS| Class Instance:       | detail_trailers.xml      | (Horizontal RecyclerView)  |
  *  |             |       MovieTrailers   |                          |(   Single Video Layout:  ) |
- *  |             | Enum Type: TRAILERS   |                          |( movie_detail_trailer.xml )|
+ *  |             | Enum Type: TRAILERS   |                          |( detail_trailer|
  *  |             |                       |                          |                            |
  *  |             |                       |                          |ideo1 Video2 Video3 Video4 V|
  *  |             |                       |                          |                            |
  *  |---------------------------------------------------------------------------------------------|
- *  |VIEW_REVIEW  | Class Instance:       | movie_detail_review.xml  | This is a review about the |
+ *  |VIEW_REVIEW  | Class Instance:       | detail_review            | This is a review about the |
  *  |             |       MovieReview     |                          | review in the review ....  |
  *  |             | Enum Type: REVIEW     |                          |                            |
  *  |_____________|_______________________|__________________________|____________________________|
 
  *
  */
-public class MovieDetailAdapter extends BaseAdapter{
-    private final String LOG_TAG = MovieDetailAdapter.class.getSimpleName();
+public class DetailsAdapter extends BaseAdapter{
+    private final String LOG_TAG = DetailsAdapter.class.getSimpleName();
     private List<MovieDetail> mDetails;
     private Context mContext;
-    private int mMovieId;
     private static final int VIEW_SUMMARY = 0;
     private static final int VIEW_REVIEW = 1;
     private static final int VIEW_TRAILERS = 2;
 
-    public MovieDetailAdapter(Context context, List<MovieDetail> movieDetails, int movieId) {
+    public DetailsAdapter(Context context, List<MovieDetail> movieDetails) {
         super();
         mDetails = movieDetails;
         mContext = context;
-        mMovieId = movieId;
     }
 
     @Override
@@ -116,7 +114,7 @@ public class MovieDetailAdapter extends BaseAdapter{
         switch(type) {
             case VIEW_SUMMARY: {
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.movie_detail_summary, parent, false);
+                    convertView = inflater.inflate(R.layout.detail_summary, parent, false);
                     summaryViewHolder = new SummaryHolder(convertView); //Thanks ButterKnife
                     convertView.setTag(summaryViewHolder);
                 } else {
@@ -135,7 +133,7 @@ public class MovieDetailAdapter extends BaseAdapter{
             }
             case VIEW_TRAILERS: {
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.movie_detail_trailers, parent, false);
+                    convertView = inflater.inflate(R.layout.detail_trailers, parent, false);
                     trailersHolder = new TrailersHolder(convertView);
                     convertView.setTag(trailersHolder);
                 } else {
@@ -143,7 +141,7 @@ public class MovieDetailAdapter extends BaseAdapter{
                 }
                 MovieTrailers trailers = (MovieTrailers) mDetails.get(position);
                 //setup trailers RecyclerView to display the trailer videos horizontally, adapter and all...
-                MovieTrailerAdapter trailerAdapter = new MovieTrailerAdapter(mContext, trailers);
+                TrailerAdapter trailerAdapter = new TrailerAdapter(mContext, trailers);
                 RecyclerView trailersRecyclerView = trailersHolder.mTrailersRecyclerView;
                 trailersRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
                 trailersRecyclerView.setAdapter(trailerAdapter);
@@ -152,7 +150,7 @@ public class MovieDetailAdapter extends BaseAdapter{
             }
             case VIEW_REVIEW: {
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.movie_detail_review, parent, false);
+                    convertView = inflater.inflate(R.layout.detail_review, parent, false);
                     reviewHolder = new ReviewHolder(convertView);
                     convertView.setTag(reviewHolder);
                 } else {

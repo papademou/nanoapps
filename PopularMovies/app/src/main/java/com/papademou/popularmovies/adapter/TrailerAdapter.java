@@ -24,10 +24,10 @@ import butterknife.ButterKnife;
 /**
  * RecyclerView Adapter to display movie trailers horizontally
  */
-public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.ViewHolder>{
+public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder>{
     private List<MovieTrailer> mTrailers;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.trailer_thumb) ImageView mImageView;
 
         public ViewHolder(View view) {
@@ -36,14 +36,14 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         }
     }
 
-    public MovieTrailerAdapter(Context context, MovieTrailers trailers) {
+    public TrailerAdapter(Context context, MovieTrailers trailers) {
         mTrailers = trailers.getMTrailers();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_detail_trailer, parent, false);
+                .inflate(R.layout.detail_trailer, parent, false);
         return new ViewHolder(view);
     }
 
